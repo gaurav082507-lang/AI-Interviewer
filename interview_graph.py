@@ -157,69 +157,72 @@ def make_initial_state(role: str, date: str) -> State:
         'human_answer': ""
     }
 
-# --- THEME MATCHED UI WRAPPER ---
+# --- STYLED INTERFACE CLEANUP ---
 
-# Set configuration to match the dark look of DataLens AI
-st.set_page_config(page_title="Interviewer AI Engine", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Interviewer AI", layout="wide", initial_sidebar_state="expanded")
 
-# Inject custom CSS for the exact color schema matching the provided picture
+# Injected CSS matches exactly the typography and padding parameters of DataLens AI
 st.markdown("""
     <style>
-        .stApp { background-color: #0d0f1d; color: #e2e8f0; }
-        [data-testid="stSidebar"] { background-color: #111326; border-right: 1px solid #1f2347; }
-        .badge { background: #1a233d; border: 1px solid #3b82f6; color: #60a5fa; padding: 4px 12px; border-radius: 12px; font-size: 13px; margin: 4px; display: inline-block; }
-        .mistral-connected { background-color: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 6px 12px; border-radius: 20px; font-size: 13px; display: inline-block; font-weight: 500;}
-        .main-header { font-size: 42px; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 5px; font-family: 'Inter', sans-serif;}
-        .sub-header { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #6366f1; text-align: center; font-weight: bold; margin-bottom: 25px;}
-        .desc-text { color: #94a3b8; text-align: center; font-size: 16px; max-width: 650px; margin: 0 auto 30px auto; }
-        .stButton>button { background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%); color: white; border: none; font-weight: bold; width: 100%; border-radius: 8px; transition: 0.3s; }
-        .stButton>button:hover { opacity: 0.9; transform: translateY(-1px); }
+        .stApp { background-color: #0b0d19; color: #e2e8f0; }
+        [data-testid="stSidebar"] { background-color: #0f1122; border-right: 1px solid #1e2243; }
+        .badge-container { text-align: center; margin-bottom: 35px; }
+        .badge { background: rgba(59, 130, 246, 0.05); border: 1px solid #273469; color: #7cb0ff; padding: 4px 14px; border-radius: 20px; font-size: 13px; margin: 0 6px; display: inline-block; font-family: monospace; }
+        .mistral-connected { background-color: rgba(16, 185, 129, 0.06); border: 1px solid #10b981; color: #10b981; padding: 5px 12px; border-radius: 20px; font-size: 12px; display: inline-block; font-weight: 500; margin-bottom: 20px; }
+        .main-header { font-size: 54px; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 12px; font-family: 'Inter', sans-serif; letter-spacing: -1px; }
+        .sub-header { font-size: 13px; text-transform: uppercase; letter-spacing: 3px; color: #7579ff; text-align: center; font-weight: 700; margin-top: 60px; margin-bottom: 10px; }
+        .desc-text { color: #8fa0ba; text-align: center; font-size: 16px; max-width: 700px; margin: 0 auto 35px auto; line-height: 1.6; }
+        
+        /* Interactive Card Container styling matching the picture layout */
+        .card-panel { background-color: rgba(17, 20, 38, 0.6); border: 1px solid #1e2348; border-radius: 12px; padding: 24px; margin: 0 auto; max-width: 850px; text-align: center; }
+        .card-panel-text { color: #38bdf8; font-size: 15px; font-weight: 500; }
+        
+        .stButton>button { background: linear-gradient(90deg, #3b82f6 0%, #5d61f4 100%); color: white; border: none; font-weight: 600; width: 100%; border-radius: 8px; padding: 10px 0; transition: 0.2s; }
+        .stButton>button:hover { opacity: 0.95; box-shadow: 0 4px 12px rgba(93, 97, 244, 0.3); }
+        .sidebar-subtitle { font-size: 12px; color: #515c7a; margin-top: -12px; margin-bottom: 20px; }
+        footer, header {visibility: hidden;}
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize Session States
 if "graph" not in st.session_state:
     st.session_state.graph = build_app()
     st.session_state.config = {"configurable": {"thread_id": "interview_session_1"}}
     st.session_state.interview_started = False
     st.session_state.current_question = ""
-    st.session_state.is_finished = False
 
-# SIDEBAR CONFIGURATION (Matching DataLens Sidebar)
+# --- SIDEBAR PANEL ---
 with st.sidebar:
-    st.markdown("### 🧠 Interviewer AI")
-    st.markdown("<p style='color:#64748b; font-size:12px; margin-top:-10px;'>LangGraph · Mistral AI · Human-in-the-loop</p>", unsafe_allow_html=True)
+    st.markdown("### 🔮 Interviewer AI")
+    st.markdown("<div class='sidebar-subtitle'>LangGraph · MemorySaver · Mistral AI</div>", unsafe_allow_html=True)
     st.markdown("<div class='mistral-connected'>● Mistral API key connected</div>", unsafe_allow_html=True)
     st.markdown("---")
     
-    st.markdown("### 📋 Position Setup")
-    role_input = st.text_input("Target Role / Job Position", value="Senior Software Engineer", disabled=st.session_state.interview_started)
+    st.markdown("💼 **Target Role**")
+    role_input = st.text_input("Enter vacancy title", value="Senior Software Engineer", label_visibility="collapsed", disabled=st.session_state.interview_started)
     date_str = datetime.date.today().strftime("%Y-%m-%d")
     
     st.markdown("---")
     if not st.session_state.interview_started:
-        if st.button("🚀 Run Analysis & Start"):
+        if st.button("🚀 Run Analysis"):
             st.session_state.interview_started = True
             initial_state = make_initial_state(role_input, date_str)
             
-            # Start graph iteration execution
             events = st.session_state.graph.stream(initial_state, st.session_state.config, stream_mode="values")
             for event in events:
                 if 'interview_question' in event:
                     st.session_state.current_question = event['interview_question']
             st.rerun()
     else:
-        if st.button("🔄 Reset Session"):
+        if st.button("🔄 Reset Interview Session"):
             st.session_state.clear()
             st.rerun()
 
-# MAIN INTERFACE
+# --- MAIN ENGINE CANVAS ---
 st.markdown("<div class='sub-header'>Autonomous AI Interview Engine</div>", unsafe_allow_html=True)
-st.markdown(f"<div class='main-header'>Interviewer AI</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-header'>Interviewer AI</div>", unsafe_allow_html=True)
 
-# Center Badges
-st.markdown(f"""
-<div style='text-align: center; margin-bottom: 20px;'>
+st.markdown("""
+<div class='badge-container'>
     <span class='badge'>📐 LangGraph State</span>
     <span class='badge'>🧬 MemorySaver</span>
     <span class='badge'>🔗 LangChain</span>
@@ -228,27 +231,29 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 if not st.session_state.interview_started:
-    # Landing View matching DataLens Placeholder
-    st.markdown(f"<div class='desc-text'>Configure the target vacancy in the sidebar and press <b>Run Analysis</b> to step into your interactive, agentic mock simulation.</div>", unsafe_allow_html=True)
-    st.info("👈 Enter the Role Title on the left panel to begin your automated competency checklist evaluation.")
+    # Landing View matching original DataLens Dashboard layout completely
+    st.markdown("<div class='desc-text'>Configure any job role framework in the sidebar configuration and execute the analysis loop to retrieve dynamic technical checksheets, applied real-time scenario evaluations, and full reporting metrics.</div>", unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class='card-panel'>
+        <span class='card-panel-text'>👉 Configure a vacancy in the sidebar and click <b>Run Analysis</b> to get started.</span>
+    </div>
+    """, unsafe_allow_html=True)
+
 else:
-    # Check if the evaluation report text is generated (meaning it hit END)
+    # Active Session view (No extra layouts below it)
     if "Interview Date:" in st.session_state.current_question:
-        st.session_state.is_finished = True
-        st.success("🎉 The interview simulation has concluded successfully! Read the final evaluation report below:")
-        st.text_area("Evaluation Report Summary", value=st.session_state.current_question, height=500)
+        st.success("🎉 Interview Process Complete. Diagnostic summary generated below:")
+        st.text_area("Final Evaluation Metrics", value=st.session_state.current_question, height=450)
     else:
-        # Dynamic Chat Screen Panel
-        st.markdown("### 💬 AI Interviewer Question")
+        st.markdown("### 💬 Active Competency Assessment Question")
         st.info(st.session_state.current_question)
         
-        # User input form
-        with st.form(key="answer_form", clear_on_submit=True):
-            user_reply = st.text_area("Your Response:", placeholder="Type your structured answer here...", height=150)
-            submit_btn = st.form_submit_button("Submit Answer to Agent")
+        with st.form(key="runtime_answer_form", clear_on_submit=True):
+            user_reply = st.text_area("Candidate Response Input:", placeholder="Enter your descriptive feedback response here...", height=140)
+            submit_btn = st.form_submit_button("Submit Response to System Node")
             
             if submit_btn and user_reply.strip():
-                # Resume execution through command update via human-in-the-loop interrupt flow
                 events = st.session_state.graph.stream(
                     Command(resume=user_reply), 
                     st.session_state.config, 
