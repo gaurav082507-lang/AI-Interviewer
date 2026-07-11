@@ -161,20 +161,20 @@ def make_initial_state(role: str, date: str) -> State:
 
 st.set_page_config(page_title="Interviewer AI Engine", layout="wide", initial_sidebar_state="expanded")
 
-# Injecting identical layout properties, custom fonts, buttons and color spectrums
+# Injecting clean premium gradient components + styling the configuration form 
 st.markdown("""
     <style>
-        /* Main background color & deep workspace radial glow matching the picture */
+        /* Deep workspace radial glow matching DataLens */
         .stApp {
-            background: radial-gradient(circle at 50% -20%, #1e1e38 0%, #080911 60%, #05050b 100%);
+            background: radial-gradient(circle at 50% -20%, #1c1d3a 0%, #070812 55%, #04050a 100%);
             color: #e2e8f0;
             font-family: 'Inter', system-ui, sans-serif;
         }
         
         /* Sidebar styling with flat dark layout and solid divider panel */
         [data-testid="stSidebar"] {
-            background-color: #0b0c16;
-            border-right: 1px solid #161933;
+            background-color: #0a0b15;
+            border-right: 1px solid #151830;
         }
         
         /* Custom UI Header Text Alignments and Color Splashes */
@@ -185,11 +185,11 @@ st.markdown("""
             color: #7980ff;
             text-align: center;
             font-weight: 700;
-            margin-top: 70px;
+            margin-top: 60px;
             margin-bottom: 8px;
         }
         .engine-title {
-            font-size: 56px;
+            font-size: 54px;
             font-weight: 800;
             background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
             -webkit-background-clip: text;
@@ -213,8 +213,8 @@ st.markdown("""
             margin-bottom: 40px;
         }
         .tech-pill {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.07);
             color: #94a3b8;
             padding: 6px 16px;
             border-radius: 30px;
@@ -222,69 +222,82 @@ st.markdown("""
             margin: 0 5px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
         }
         
-        /* Central Dynamic Glass container matching DataLens exactly */
+        /* High-fidelity Gradient Form styling matching photo demand */
+        [data-testid="stForm"] {
+            background: linear-gradient(180deg, rgba(22, 26, 51, 0.55) 0%, rgba(11, 13, 26, 0.65) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 14px !important;
+            padding: 30px !important;
+            margin: 0 auto !important;
+            max-width: 820px !important;
+        }
+        
+        .form-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+        
+        /* Central Dynamic Glass banner */
         .action-card {
-            background: linear-gradient(180deg, rgba(20, 24, 48, 0.6) 0%, rgba(12, 14, 28, 0.6) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 32px;
-            margin: 0 auto;
-            max-width: 880px;
+            background: rgba(18, 22, 43, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 0 auto 30px auto;
+            max-width: 820px;
             text-align: center;
         }
         .action-card-text {
             color: #38bdf8;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
         
         /* Connected API Micro-Badge */
         .api-badge {
             background-color: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.25);
             color: #10b981;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             display: inline-block;
             font-weight: 500;
             margin-bottom: 25px;
         }
         
-        /* Sidebar Action Button styling mimicking original Run Analysis button */
+        /* Main Action Buttons styling mirroring original layout */
         .stButton>button {
-            background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
-            color: #ffffff;
+            background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+            color: #ffffff !important;
             border: none;
             font-weight: 600;
-            letter-spacing: 0.3px;
-            width: 100%;
-            border-radius: 8px;
-            padding: 12px 0;
+            border-radius: 6px;
+            padding: 10px 24px;
             transition: all 0.2s ease;
         }
         .stButton>button:hover {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 18px rgba(79, 70, 229, 0.4);
             transform: translateY(-1px);
-            color: #ffffff;
         }
         
         /* Text input customization to blend seamlessly into dark aesthetics */
-        div[data-baseweb="input"] {
-            background-color: #111322 !important;
-            border: 1px solid #222547 !important;
-            border-radius: 8px !important;
+        div[data-baseweb="input"], div[data-baseweb="textarea"] {
+            background-color: #0e101f !important;
+            border: 1px solid #1f2342 !important;
+            border-radius: 6px !important;
         }
-        input, textarea {
-            color: #ffffff !important;
+        label p {
+            color: #94a3b8 !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            margin-bottom: 6px !important;
         }
         
         /* Hiding redundant Streamlit platform elements */
@@ -301,40 +314,20 @@ if "graph" not in st.session_state:
 # --- SIDEBAR CONTROL PANEL ---
 with st.sidebar:
     st.markdown("### 🔮 Interviewer AI")
-    st.markdown("<p style='color:#4e5875; font-size:12px; margin-top:-10px; margin-bottom:15px;'>langgraph framework · mistral engine</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#47516e; font-size:12px; margin-top:-10px; margin-bottom:15px;'>langgraph framework · mistral engine</p>", unsafe_allow_html=True)
     st.markdown("<div class='api-badge'>● Mistral API key connected</div>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
     
-    st.markdown("📁 **Job Target Structure**")
-    role_input = st.text_input(
-        "Job Target Structure",
-        value="Senior Software Engineer",
-        label_visibility="collapsed",
-        disabled=st.session_state.interview_started
-    )
-    date_str = datetime.date.today().strftime("%Y-%m-%d")
-    
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    if not st.session_state.interview_started:
-        if st.button("🚀 Run Analysis"):
-            st.session_state.interview_started = True
-            initial_state = make_initial_state(role_input, date_str)
-            
-            events = st.session_state.graph.stream(initial_state, st.session_state.config, stream_mode="values")
-            for event in events:
-                if 'interview_question' in event:
-                    st.session_state.current_question = event['interview_question']
-            st.rerun()
-    else:
-        if st.button("🔄 Reset Framework"):
+    if st.session_state.interview_started:
+        if st.button("🔄 Reset Framework Session"):
             st.session_state.clear()
             st.rerun()
 
-# --- MAIN GRADIENT CANVAS CONTENT ---
+# --- MAIN GRAPHICS ENGINE CANVAS ---
 st.markdown("<div class='engine-subtitle'>Autonomous AI Interview Engine</div>", unsafe_allow_html=True)
 st.markdown("<div class='engine-title'>Interviewer AI</div>", unsafe_allow_html=True)
 
-# Tech Pill Array Matching the image style
+# Tech Pill Array Style
 st.markdown("""
 <div class='tech-pill-container'>
     <span class='tech-pill'>📐 LangGraph State</span>
@@ -345,28 +338,46 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 if not st.session_state.interview_started:
-    # Pristine Landing View
     st.markdown("<div class='engine-desc'>Establish an internal pipeline checklist across customized vacancies. The runtime engine loops structured domain skill assessments, conversational evaluations, and diagnostic reports natively via state machine nodes.</div>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class='action-card'>
-        <div class='action-card-text'>👉 Configure the Target Vacancy in the sidebar and click <b>Run Analysis</b> to start.</div>
+        <div class='action-card-text'>👉 Configure the Target Vacancy below and click <b>Start Interview</b> to initiate the agent loop.</div>
     </div>
     """, unsafe_allow_html=True)
 
+    # Clean Gradient Form block (Removed the redundant parent header completely)
+    with st.form(key="interview_setup_form"):
+        st.markdown("<div class='form-section-title'>Set up your interview</div>", unsafe_allow_html=True)
+        
+        role_input = st.text_input("Role you're applying for", value="e.g. Junior ML Engineer")
+        date_str = st.text_input("Interview date", value=datetime.date.today().strftime("%Y/%m/%d"))
+        
+        st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
+        submit_setup = st.form_submit_button("🚀 Start Interview")
+        
+        if submit_setup:
+            st.session_state.interview_started = True
+            initial_state = make_initial_state(role_input, date_str)
+            
+            events = st.session_state.graph.stream(initial_state, st.session_state.config, stream_mode="values")
+            for event in events:
+                if 'interview_question' in event:
+                    st.session_state.current_question = event['interview_question']
+            st.rerun()
+
 else:
-    # Active Node Execution Interface
+    # Active Node Interview Workspace Panel
     if "Interview Date:" in st.session_state.current_question:
-        st.markdown("<div class='action-card' style='text-align: left;'>", unsafe_allow_html=True)
+        st.markdown("<div class='stForm'>", unsafe_allow_html=True)
         st.success("🏁 Diagnostic Framework Concluded. Post-Interview Summary Generated:")
         st.text_area("Evaluation Report", value=st.session_state.current_question, height=450, label_visibility="collapsed")
         st.markdown("</div>", unsafe_allow_html=True)
     else:
-        # Styled Interview Active Canvas
         st.markdown(
-            f"<div class='action-card' style='text-align:left; padding: 25px; margin-bottom: 25px;'>"
+            f"<div class='action-card' style='text-align:left; padding: 25px; margin-bottom: 25px; border-left: 4px solid #4f46e5;'>"
             f"<span style='color: #818cf8; font-size:12px; font-weight:600; text-transform:uppercase;'>Current Question Vector</span>"
-            f"<p style='font-size:17px; margin-top:5px; color:#ffffff;'>{st.session_state.current_question}</p>"
+            f"<p style='font-size:17px; margin-top:5px; color:#ffffff; line-height:1.5;'>{st.session_state.current_question}</p>"
             f"</div>", 
             unsafe_allow_html=True
         )
