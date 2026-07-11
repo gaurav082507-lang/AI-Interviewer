@@ -230,4 +230,170 @@ st.markdown("""
             border-radius: 12px;
             padding: 20px;
             margin: 0 auto 30px auto;
-            max-width
+            max-width: 820px;
+            text-align: center;
+        }
+        .action-card-text {
+            color: #38bdf8;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* Premium Frosted Glass Setup Form Customization */
+        [data-testid="stForm"] {
+            background: linear-gradient(180deg, rgba(22, 26, 51, 0.55) 0%, rgba(11, 13, 26, 0.65) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 14px !important;
+            padding: 30px !important;
+            margin: 0 auto !important;
+            max-width: 820px !important;
+        }
+        
+        .form-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+        
+        .api-badge {
+            background-color: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #10b981;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            font-weight: 500;
+            margin-bottom: 25px;
+        }
+        
+        /* Action Buttons Styling */
+        .stButton>button {
+            background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+            color: #ffffff !important;
+            border: none;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 10px 24px;
+            transition: all 0.2s ease;
+        }
+        .stButton>button:hover {
+            box-shadow: 0 0 18px rgba(79, 70, 229, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        /* Smooth native input inputs matching form container */
+        div[data-baseweb="input"], div[data-baseweb="textarea"] {
+            background-color: #0e101f !important;
+            border: 1px solid #1f2342 !important;
+            border-radius: 6px !important;
+        }
+        label p {
+            color: #94a3b8 !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            margin-bottom: 6px !important;
+        }
+        
+        footer, header { visibility: hidden; }
+    </style>
+""", unsafe_allow_html=True)
+
+if "graph" not in st.session_state:
+    st.session_state.graph = build_app()
+    st.session_state.config = {"configurable": {"thread_id": "interview_session_1"}}
+    st.session_state.interview_started = False
+    st.session_state.current_question = ""
+
+# --- SIDEBAR CONTROL PANEL ---
+with st.sidebar:
+    st.markdown("### 🔮 Interviewer AI")
+    st.markdown("<p style='color:#47516e; font-size:12px; margin-top:-10px; margin-bottom:15px;'>langgraph framework · mistral engine</p>", unsafe_allow_html=True)
+    st.markdown("<div class='api-badge'>● Mistral API key connected</div>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    if st.session_state.interview_started:
+        if st.button("🔄 Reset Framework Session"):
+            st.session_state.clear()
+            st.rerun()
+
+# --- MAIN ENGINE FRAME CANVAS ---
+st.markdown("<div class='engine-subtitle'>Autonomous AI Interview Engine</div>", unsafe_allow_html=True)
+st.markdown("<div class='engine-title'>Interviewer AI</div>", unsafe_allow_html=True)
+
+st.markdown("""
+<div class='tech-pill-container'>
+    <span class='tech-pill'>📐 LangGraph State</span>
+    <span class='tech-pill'>🧬 MemorySaver</span>
+    <span class='tech-pill'>🔗 LangChain</span>
+    <span class='tech-pill'>🤖 Mistral AI</span>
+</div>
+""", unsafe_allow_html=True)
+
+# --- CONDITIONAL RUNTIME RENDERING ---
+if not st.session_state.interview_started:
+    st.markdown("<div class='engine-desc'>Establish an internal pipeline checklist across customized vacancies. The runtime engine loops structured domain skill assessments, conversational evaluations, and diagnostic reports natively via state machine nodes.</div>", unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class='action-card'>
+        <div class='action-card-text'>👉 Configure the Target Vacancy below and click <b>Start Interview</b> to initiate the agent loop.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # The Setup Form only shows up here (When interview has not started yet)
+    with st.form(key="interview_setup_form"):
+        st.markdown("<div class='form-section-title'>Set up your interview</div>", unsafe_allow_html=True)
+        
+        role_input = st.text_input("Role you're applying for", value="e.g. Junior ML Engineer")
+        date_str = st.text_input("Interview date", value=datetime.date.today().strftime("%Y/%m/%d"))
+        
+        st.markdown("<div style='margin-top: 10px;'></div>", unsafe_allow_html=True)
+        submit_setup = st.form_submit_button("🚀 Start Interview")
+        
+        if submit_setup:
+            st.session_state.interview_started = True
+            initial_state = make_initial_state(role_input, date_str)
+            
+            events = st.session_state.graph.stream(initial_state, st.session_state.config, stream_mode="values")
+            for event in events:
+                if 'interview_question' in event:
+                    st.session_state.current_question = event['interview_question']
+            st.rerun()
+
+else:
+    # Active Session Workspace Panel (Replaces the setup form entirely once running)
+    if "Interview Date:" in st.session_state.current_question:
+        st.markdown("<div class='stForm'>", unsafe_allow_html=True)
+        st.success("🏁 Diagnostic Framework Concluded. Post-Interview Summary Generated:")
+        st.text_area("Evaluation Report", value=st.session_state.current_question, height=450, label_visibility="collapsed")
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(
+            f"<div class='action-card' style='text-align:left; padding: 25px; margin-bottom: 25px; border-left: 4px solid #4f46e5;'>"
+            f"<span style='color: #818cf8; font-size:12px; font-weight:600; text-transform:uppercase;'>Current Question Vector</span>"
+            f"<p style='font-size:17px; margin-top:5px; color:#ffffff; line-height:1.5;'>{st.session_state.current_question}</p>"
+            f"</div>", 
+            unsafe_allow_html=True
+        )
+        
+        with st.form(key="runtime_answer_form", clear_on_submit=True):
+            user_reply = st.text_area(
+                "Your Response:", 
+                placeholder="Compose your structural response to the interviewer prompt here...", 
+                height=150
+            )
+            submit_btn = st.form_submit_button("Submit Response Node")
+            
+            if submit_btn and user_reply.strip():
+                events = st.session_state.graph.stream(
+                    Command(resume=user_reply), 
+                    st.session_state.config, 
+                    stream_mode="values"
+                )
+                for event in events:
+                    if 'interview_question' in event:
+                        st.session_state.current_question = event['interview_question']
+                st.rerun()
