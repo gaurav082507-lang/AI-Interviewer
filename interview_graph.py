@@ -22,6 +22,29 @@ class State(TypedDict):
 
 LLM = ChatGoogleGenerativeAI(model='gemini-3.5-flash-lite', temperature=0.2)
 
+
+def extract_text(raw_content) -> str:
+    """Normalize a LangChain message's .content into a plain string.
+
+    Gemini (unlike Mistral) can return .content as a list of content
+    blocks, e.g. [{'type': 'text', 'text': '...', 'extras': {...}}],
+    instead of a plain string. This flattens either shape into text.
+    """
+    if isinstance(raw_content, str):
+        return raw_content
+
+    if isinstance(raw_content, list):
+        parts = []
+        for block in raw_content:
+            if isinstance(block, dict) and block.get("type") == "text":
+                parts.append(block.get("text", ""))
+            elif isinstance(block, str):
+                parts.append(block)
+        return "".join(parts).strip()
+
+    return str(raw_content)
+
+
 def interview_node(state: State):
     role = state['role']
     human_reponse = state['human_answer']
@@ -110,7 +133,7 @@ Recommended Next Step: [Advance to next round/Additional screening needed/Do not
 
     messages = [('system', INTERVIEW_SYSTEM_PROMPT)] + statemessages + [('human', user_prompt)]
     interview_question = LLM.invoke(messages)
-    question = interview_question.content
+    question = extract_text(interview_question.content)
 
     return {
         'messages': [('ai', question)],
