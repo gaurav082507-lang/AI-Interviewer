@@ -9,6 +9,92 @@ from interview_graph import build_app, make_initial_state
 st.set_page_config(page_title="AI Interviewer", page_icon="🧑‍💼", layout="centered")
 
 # ---------------------------------------------------------------------------
+# Dark gradient theme (matches the Interviewer AI engine styling)
+# ---------------------------------------------------------------------------
+st.markdown("""
+    <style>
+        .stApp {
+            background: radial-gradient(circle at 50% -20%, #1c1d3a 0%, #070812 55%, #04050a 100%);
+            color: #e2e8f0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        [data-testid="stSidebar"] {
+            background-color: #0a0b15;
+            border-right: 1px solid #151830;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff !important;
+            letter-spacing: -0.5px;
+        }
+
+        .stApp h1 {
+            background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        [data-testid="stForm"] {
+            background: linear-gradient(180deg, rgba(22, 26, 51, 0.55) 0%, rgba(11, 13, 26, 0.65) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5) !important;
+            border-radius: 14px !important;
+            padding: 26px !important;
+        }
+
+        .stButton>button, .stFormSubmitButton>button, .stDownloadButton>button {
+            background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+            color: #ffffff !important;
+            border: none;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 10px 24px;
+            transition: all 0.2s ease;
+        }
+        .stButton>button:hover, .stFormSubmitButton>button:hover, .stDownloadButton>button:hover {
+            box-shadow: 0 0 18px rgba(79, 70, 229, 0.4);
+            transform: translateY(-1px);
+        }
+
+        div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="datepicker"] {
+            background-color: #0e101f !important;
+            border: 1px solid #1f2342 !important;
+            border-radius: 6px !important;
+        }
+        label p {
+            color: #94a3b8 !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+        }
+
+        [data-testid="stChatMessage"] {
+            background: rgba(18, 22, 43, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+        }
+
+        .stAlert {
+            background: rgba(16, 185, 129, 0.08) !important;
+            border: 1px solid rgba(16, 185, 129, 0.25) !important;
+        }
+
+        .streamlit-expanderHeader {
+            background: rgba(18, 22, 43, 0.4) !important;
+            border-radius: 8px !important;
+            color: #e2e8f0 !important;
+        }
+
+        [data-testid="stCaptionContainer"] {
+            color: #7f8ea6 !important;
+        }
+
+        footer, header { visibility: hidden; }
+    </style>
+""", unsafe_allow_html=True)
+
+# ---------------------------------------------------------------------------
 # Session state initialization
 # ---------------------------------------------------------------------------
 if "app" not in st.session_state:
