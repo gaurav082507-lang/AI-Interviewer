@@ -4,7 +4,7 @@ load_dotenv()
 
 from typing import Annotated, TypedDict
 from langgraph.graph import StateGraph, START, END
-from langchain_mistralai import ChatMistralAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import interrupt, Command
@@ -20,7 +20,7 @@ class State(TypedDict):
     attempt: int
     human_answer: str
 
-LLM = ChatMistralAI(model='mistral-medium-3-5', temperature=0.2)
+LLM = ChatGoogleGenerativeAI(model='gemini-3.5-flash-lite', temperature=0.2)
 
 def interview_node(state: State):
     role = state['role']
@@ -311,8 +311,8 @@ if "graph" not in st.session_state:
 # --- SIDEBAR CONTROL PANEL ---
 with st.sidebar:
     st.markdown("### 🔮 Interviewer AI")
-    st.markdown("<p style='color:#47516e; font-size:12px; margin-top:-10px; margin-bottom:15px;'>langgraph framework · mistral engine</p>", unsafe_allow_html=True)
-    st.markdown("<div class='api-badge'>● Mistral API key connected</div>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#47516e; font-size:12px; margin-top:-10px; margin-bottom:15px;'>langgraph framework · gemini engine</p>", unsafe_allow_html=True)
+    st.markdown("<div class='api-badge'>● Google API key connected</div>", unsafe_allow_html=True)
     st.markdown("---")
     
     if st.session_state.interview_started:
@@ -329,7 +329,7 @@ st.markdown("""
     <span class='tech-pill'>📐 LangGraph State</span>
     <span class='tech-pill'>🧬 MemorySaver</span>
     <span class='tech-pill'>🔗 LangChain</span>
-    <span class='tech-pill'>🤖 Mistral AI</span>
+    <span class='tech-pill'>🤖 Gemini AI</span>
 </div>
 """, unsafe_allow_html=True)
 
