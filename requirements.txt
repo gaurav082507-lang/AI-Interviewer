@@ -12,3 +12,4 @@ faiss-cpu
 streamlit
 pypdf
 torchvision
+langchain_google_genai 
